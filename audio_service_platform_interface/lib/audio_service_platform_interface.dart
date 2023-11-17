@@ -407,6 +407,8 @@ class PlaybackStateMessage {
   /// Whether captioning is enabled.
   final bool captioningEnabled;
 
+  final bool? killNotification;
+
   /// The index of the current item in the queue, if any.
   final int? queueIndex;
 
@@ -428,35 +430,36 @@ class PlaybackStateMessage {
     this.shuffleMode = AudioServiceShuffleModeMessage.none,
     this.captioningEnabled = false,
     this.queueIndex,
+    this.killNotification,
   })  : assert(androidCompactActionIndices == null ||
             androidCompactActionIndices.length <= 3),
         updateTime = updateTime ?? DateTime.now();
 
   factory PlaybackStateMessage.fromMap(Map<String, dynamic> map) =>
       PlaybackStateMessage(
-        processingState:
-            AudioProcessingStateMessage.values[map['processingState'] as int],
-        playing: map['playing'] as bool,
-        controls: const [],
-        androidCompactActionIndices: null,
-        systemActions: (map['systemActions'] as List)
-            .map((dynamic action) => MediaActionMessage.values[action as int])
-            .toSet(),
-        updatePosition: Duration(microseconds: map['updatePosition'] as int),
-        bufferedPosition:
-            Duration(microseconds: map['bufferedPosition'] as int),
-        speed: map['speed'] as double,
-        updateTime:
-            DateTime.fromMillisecondsSinceEpoch(map['updateTime'] as int),
-        errorCode: map['errorCode'] as int?,
-        errorMessage: map['errorMessage'] as String?,
-        repeatMode:
-            AudioServiceRepeatModeMessage.values[map['repeatMode'] as int],
-        shuffleMode:
-            AudioServiceShuffleModeMessage.values[map['shuffleMode'] as int],
-        captioningEnabled: map['captioningEnabled'] as bool,
-        queueIndex: map['queueIndex'] as int?,
-      );
+          processingState:
+              AudioProcessingStateMessage.values[map['processingState'] as int],
+          playing: map['playing'] as bool,
+          controls: const [],
+          androidCompactActionIndices: null,
+          systemActions: (map['systemActions'] as List)
+              .map((dynamic action) => MediaActionMessage.values[action as int])
+              .toSet(),
+          updatePosition: Duration(microseconds: map['updatePosition'] as int),
+          bufferedPosition:
+              Duration(microseconds: map['bufferedPosition'] as int),
+          speed: map['speed'] as double,
+          updateTime:
+              DateTime.fromMillisecondsSinceEpoch(map['updateTime'] as int),
+          errorCode: map['errorCode'] as int?,
+          errorMessage: map['errorMessage'] as String?,
+          repeatMode:
+              AudioServiceRepeatModeMessage.values[map['repeatMode'] as int],
+          shuffleMode:
+              AudioServiceShuffleModeMessage.values[map['shuffleMode'] as int],
+          captioningEnabled: map['captioningEnabled'] as bool,
+          queueIndex: map['queueIndex'] as int?,
+          killNotification: map['killNotification'] as bool);
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         'processingState': processingState.index,
@@ -474,6 +477,7 @@ class PlaybackStateMessage {
         'shuffleMode': shuffleMode.index,
         'captioningEnabled': captioningEnabled,
         'queueIndex': queueIndex,
+        'killNotification': killNotification,
       };
 }
 

@@ -231,6 +231,8 @@ class PlaybackState {
   /// The index of the current item in the queue, if any.
   final int? queueIndex;
 
+  final bool? killNotification;
+
   /// Creates a [PlaybackState] with given field values, and with [updateTime]
   /// defaulting to [DateTime.now].
   PlaybackState({
@@ -249,6 +251,7 @@ class PlaybackState {
     this.shuffleMode = AudioServiceShuffleMode.none,
     this.captioningEnabled = false,
     this.queueIndex,
+    this.killNotification,
   })  : assert(androidCompactActionIndices == null ||
             androidCompactActionIndices.length <= 3),
         updateTime = updateTime ?? clock.now();
@@ -295,6 +298,7 @@ class PlaybackState {
         shuffleMode: AudioServiceShuffleModeMessage.values[shuffleMode.index],
         captioningEnabled: captioningEnabled,
         queueIndex: queueIndex,
+        killNotification: killNotification,
       );
 
   @override
@@ -302,24 +306,24 @@ class PlaybackState {
 
   @override
   int get hashCode => Object.hash(
-        processingState,
-        playing,
-        Object.hashAll(controls),
-        androidCompactActionIndices != null
-            ? Object.hashAll(androidCompactActionIndices!)
-            : 0,
-        Object.hashAll(systemActions),
-        updatePosition,
-        bufferedPosition,
-        speed,
-        updateTime,
-        errorCode,
-        errorMessage,
-        repeatMode,
-        shuffleMode,
-        captioningEnabled,
-        queueIndex,
-      );
+      processingState,
+      playing,
+      Object.hashAll(controls),
+      androidCompactActionIndices != null
+          ? Object.hashAll(androidCompactActionIndices!)
+          : 0,
+      Object.hashAll(systemActions),
+      updatePosition,
+      bufferedPosition,
+      speed,
+      updateTime,
+      errorCode,
+      errorMessage,
+      repeatMode,
+      shuffleMode,
+      captioningEnabled,
+      queueIndex,
+      killNotification);
 
   @override
   bool operator ==(Object other) =>
@@ -341,28 +345,29 @@ class PlaybackState {
           repeatMode == other.repeatMode &&
           shuffleMode == other.shuffleMode &&
           captioningEnabled == other.captioningEnabled &&
-          queueIndex == other.queueIndex;
+          queueIndex == other.queueIndex &&
+          killNotification == other.killNotification;
 }
 
 /// The `copyWith` function type for [PlaybackState].
 abstract class PlaybackStateCopyWith {
   /// Calls this function.
-  PlaybackState call({
-    AudioProcessingState processingState,
-    bool playing,
-    List<MediaControl> controls,
-    List<int>? androidCompactActionIndices,
-    Set<MediaAction> systemActions,
-    Duration updatePosition,
-    Duration bufferedPosition,
-    double speed,
-    int? errorCode,
-    String? errorMessage,
-    AudioServiceRepeatMode repeatMode,
-    AudioServiceShuffleMode shuffleMode,
-    bool captioningEnabled,
-    int? queueIndex,
-  });
+  PlaybackState call(
+      {AudioProcessingState processingState,
+      bool playing,
+      List<MediaControl> controls,
+      List<int>? androidCompactActionIndices,
+      Set<MediaAction> systemActions,
+      Duration updatePosition,
+      Duration bufferedPosition,
+      double speed,
+      int? errorCode,
+      String? errorMessage,
+      AudioServiceRepeatMode repeatMode,
+      AudioServiceShuffleMode shuffleMode,
+      bool captioningEnabled,
+      int? queueIndex,
+      bool? killNotification});
 }
 
 /// The implementation of [PlaybackState]'s `copyWith` function allowing
@@ -391,6 +396,7 @@ class _PlaybackStateCopyWith extends PlaybackStateCopyWith {
     Object? shuffleMode = _fakeNull,
     Object? captioningEnabled = _fakeNull,
     Object? queueIndex = _fakeNull,
+    Object? killNotification = _fakeNull,
   }) =>
       PlaybackState(
         processingState: processingState == _fakeNull
@@ -426,6 +432,9 @@ class _PlaybackStateCopyWith extends PlaybackStateCopyWith {
         captioningEnabled: captioningEnabled == _fakeNull
             ? value.captioningEnabled
             : captioningEnabled as bool,
+        killNotification: killNotification == _fakeNull
+            ? value.killNotification
+            : killNotification as bool,
         queueIndex:
             queueIndex == _fakeNull ? value.queueIndex : queueIndex as int?,
       );

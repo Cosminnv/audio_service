@@ -859,6 +859,7 @@ public class AudioServicePlugin implements FlutterPlugin, ActivityAware {
                 int shuffleMode = (Integer)stateMap.get("shuffleMode");
                 Long queueIndex = getLong(stateMap.get("queueIndex"));
                 boolean captioningEnabled = (Boolean)stateMap.get("captioningEnabled");
+                boolean killNotification = (Boolean)stateMap.get("killNotification");
 
                 // On the flutter side, we represent the update time relative to the epoch.
                 // On the native side, we must represent the update time relative to the boot time.
@@ -905,7 +906,8 @@ public class AudioServicePlugin implements FlutterPlugin, ActivityAware {
                         repeatMode,
                         shuffleMode,
                         captioningEnabled,
-                        queueIndex);
+                        queueIndex,
+                        killNotification);
                 result.success(null);
                 break;
             }

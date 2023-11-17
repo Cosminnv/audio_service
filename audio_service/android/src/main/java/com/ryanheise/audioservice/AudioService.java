@@ -511,7 +511,7 @@ public class AudioService extends MediaBrowserServiceCompat {
         return PendingIntent.getBroadcast(this, 0, intent, flags);
     }
 
-    void setState(List<MediaControl> controls, long actionBits, int[] compactActionIndices, AudioProcessingState processingState, boolean playing, long position, long bufferedPosition, float speed, long updateTime, Integer errorCode, String errorMessage, int repeatMode, int shuffleMode, boolean captioningEnabled, Long queueIndex) {
+    void setState(List<MediaControl> controls, long actionBits, int[] compactActionIndices, AudioProcessingState processingState, boolean playing, long position, long bufferedPosition, float speed, long updateTime, Integer errorCode, String errorMessage, int repeatMode, int shuffleMode, boolean captioningEnabled, Long queueIndex,boolean killNotification) {
         boolean notificationChanged = false;
         if (!Arrays.equals(compactActionIndices, this.compactActionIndices)) {
             notificationChanged = true;
@@ -566,6 +566,11 @@ public class AudioService extends MediaBrowserServiceCompat {
         mediaSession.setRepeatMode(repeatMode);
         mediaSession.setShuffleMode(shuffleMode);
         mediaSession.setCaptioningEnabled(captioningEnabled);
+
+        if (killNotification){
+            exitForegroundStateAndKillNotification();
+            return;
+        }
 
         if (!wasPlaying && playing) {
             enterPlayingState();
@@ -731,6 +736,11 @@ public class AudioService extends MediaBrowserServiceCompat {
 
     private void exitForegroundState() {
         legacyStopForeground(false);
+        releaseWakeLock();
+    }
+
+    private void exitForegroundStateAndKillNotification() {
+        legacyStopForeground(true);
         releaseWakeLock();
     }
 
